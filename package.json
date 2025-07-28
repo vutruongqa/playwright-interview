@@ -1,0 +1,29 @@
+{
+  "name": "playwright-typescript-framework",
+  "version": "1.0.0",
+  "description": "A basic Playwright automation framework with TypeScript and Page Object Model for the interview testing",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright test --ui",
+    "test:debug": "npx playwright test --debug",
+    "codegen": "npx playwright codegen"
+  },
+  "keywords": [
+    "playwright",
+    "typescript",
+    "automation",
+    "testing",
+    "pom"
+  ],
+  "author": "Vu Truong",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.45.0",
+    "@types/node": "^20.19.9"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1"
+  }
+}
