@@ -16,51 +16,56 @@ test.describe('Sidebar Search Functionality', () => {
 
   test('Search exact match: Admin', async ({ page }) => {
     await page.getByPlaceholder('Search').fill('Admin');
-    await expect(page.locator('nav')).toContainText('Admin');
+    await expect(page.locator('.oxd-main-menu-item-wrapper').first()).toContainText('Admin');
+    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(1);
   });
 
   test('Search with lowercase: leave', async ({ page }) => {
     await page.getByPlaceholder('Search').fill('leave');
-    await expect(page.locator('nav')).toContainText('Leave');
+    await expect(page.locator('.oxd-main-menu-item-wrapper').first()).toContainText('Leave');
+    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(1);
   });
 
   test('Partial search: Rec', async ({ page }) => {
     await page.getByPlaceholder('Search').fill('Rec');
-    await expect(page.locator('nav')).toContainText('Recruitment');
+    await expect(page.locator('.oxd-main-menu-item-wrapper').first()).toContainText('Recruitment');
+    await expect(page.locator('.oxd-main-menu-item-wrapper').nth(1)).toContainText('Directory');
+    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(2);
   });
 
   test('Search with spaces: "  Buzz "', async ({ page }) => {
     await page.getByPlaceholder('Search').fill('  Buzz ');
-    await expect(page.locator('nav')).toContainText('Buzz');
+    await expect(page.locator('.oxd-main-menu-item-wrapper').first()).toContainText('Buzz');
+    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(1);
   });
 
   test('Search invalid item: Payroll', async ({ page }) => {
     await page.getByPlaceholder('Search').fill('Payroll');
-    await expect(page.locator('nav')).not.toContainText('Payroll');
+    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(0);
   });
 
   test('Search with symbols: "@@@"', async ({ page }) => {
     await page.getByPlaceholder('Search').fill('@@@');
-    await expect(page.locator('nav')).not.toContainText('@@@');
+    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(0);
   });
 
   test('Search with numbers only', async ({ page }) => {
     await page.getByPlaceholder('Search').fill('1234');
-    await expect(page.locator('nav')).not.toContainText('1234');
+    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(0);
   });
 
   test('Empty search input', async ({ page }) => {
     await page.getByPlaceholder('Search').fill('');
-    await expect(page.locator('nav')).toContainText('Dashboard');
+    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(12);
   });
 
   test('Mixed case search: DaShBoArD', async ({ page }) => {
     await page.getByPlaceholder('Search').fill('DaShBoArD');
-    await expect(page.locator('nav')).toContainText('Dashboard');
+    await expect(page.locator('.oxd-main-menu-item-wrapper').first()).toContainText('Dashboard');
   });
 
   test('Long string input', async ({ page }) => {
     await page.getByPlaceholder('Search').fill('thisisaverylongsearchinputtotestmaxlimit');
-    await expect(page.locator('nav')).not.toContainText('thisisaverylongsearchinputtotestmaxlimit');
+    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(0);
   });
 });
