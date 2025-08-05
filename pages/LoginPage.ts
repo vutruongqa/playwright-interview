@@ -19,6 +19,10 @@ export class LoginPage {
     this.forgotPasswordLink = page.locator('text=Forgot your password?');
   }
 
+  async goto() {
+    await this.page.goto('/');
+  }
+
   async login(username: string, password: string) {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
