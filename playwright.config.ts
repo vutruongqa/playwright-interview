@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 export default defineConfig({
+  workers: 4, // Run 4 tests in parallel
   use: {
     baseURL: process.env.BASE_URL,
     trace: 'on',

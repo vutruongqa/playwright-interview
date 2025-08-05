@@ -1,71 +1,71 @@
-import { test, expect } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import { validUsername, validPassword } from '../utils/testData';
-import { LoginPage } from '../pages/LoginPage';
+import { expect, test } from './base';
 
 dotenv.config();
 
 test.describe('Sidebar Search Functionality', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    // Login
-     const loginPage = new LoginPage(page);
-       await loginPage.login(validUsername, validPassword);
-       await expect(page).toHaveURL(/dashboard/);
-  });
+    test.beforeEach(async ({ loginPage, searchPage }) => {
+        await loginPage.goto();
+        await loginPage.login(validUsername, validPassword);
+        await searchPage.isDashboardReady();
+    });
 
-  test('Search exact match: Admin', async ({ page }) => {
-    await page.getByPlaceholder('Search').fill('Admin');
-    await expect(page.locator('.oxd-main-menu-item-wrapper').first()).toContainText('Admin');
-    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(1);
-  });
+    test('Search exact match: Admin', async ({ searchPage }) => {
+        await searchPage.search('Admin');
+        await searchPage.isMenuContainsTextAtIndex('Admin', 0);
+        await searchPage.isNumberOfItemsCorrect(1);
+    });
 
-  test('Search with lowercase: leave', async ({ page }) => {
-    await page.getByPlaceholder('Search').fill('leave');
-    await expect(page.locator('.oxd-main-menu-item-wrapper').first()).toContainText('Leave');
-    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(1);
-  });
+    test('Search with lowercase: leave', async ({ searchPage }) => {
+        await searchPage.search('leave');
+        await searchPage.isMenuContainsTextAtIndex('Leave', 0);
+        await searchPage.isNumberOfItemsCorrect(1);
+    });
 
-  test('Partial search: Rec', async ({ page }) => {
-    await page.getByPlaceholder('Search').fill('Rec');
-    await expect(page.locator('.oxd-main-menu-item-wrapper').first()).toContainText('Recruitment');
-    await expect(page.locator('.oxd-main-menu-item-wrapper').nth(1)).toContainText('Directory');
-    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(2);
-  });
+    test('Partial search: Rec', async ({ searchPage }) => {
+        await searchPage.search('Rec');
+        await searchPage.isMenuContainsTextAtIndex('Recruitment', 0);
+        await searchPage.isMenuContainsTextAtIndex('Directory', 1);
+        await searchPage.isNumberOfItemsCorrect(2);
 
-  test('Search with spaces: "  Buzz "', async ({ page }) => {
-    await page.getByPlaceholder('Search').fill('  Buzz ');
-    await expect(page.locator('.oxd-main-menu-item-wrapper').first()).toContainText('Buzz');
-    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(1);
-  });
+    });
 
-  test('Search invalid item: Payroll', async ({ page }) => {
-    await page.getByPlaceholder('Search').fill('Payroll');
-    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(0);
-  });
+    test('Search with spaces: "  Buzz "', async ({ searchPage }) => {
+        await searchPage.search('  Buzz ');
+        await searchPage.isMenuContainsText('Buzz');
+        await searchPage.isNumberOfItemsCorrect(1);
+    });
 
-  test('Search with symbols: "@@@"', async ({ page }) => {
-    await page.getByPlaceholder('Search').fill('@@@');
-    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(0);
-  });
+    test('Search invalid item: Payroll', async ({ searchPage }) => {
+        await searchPage.search('Payroll');
+        await searchPage.isNumberOfItemsCorrect(0);
+    });
 
-  test('Search with numbers only', async ({ page }) => {
-    await page.getByPlaceholder('Search').fill('1234');
-    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(0);
-  });
+    test('Search with symbols: "@@@"', async ({ searchPage }) => {
+        await searchPage.search('@@@');
+        await searchPage.isNumberOfItemsCorrect(0);
+    });
 
-  test('Empty search input', async ({ page }) => {
-    await page.getByPlaceholder('Search').fill('');
-    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(12);
-  });
+    test('Search with numbers only', async ({ searchPage }) => {
+        await searchPage.search('1234');
+        await searchPage.isNumberOfItemsCorrect(0);
+    });
 
-  test('Mixed case search: DaShBoArD', async ({ page }) => {
-    await page.getByPlaceholder('Search').fill('DaShBoArD');
-    await expect(page.locator('.oxd-main-menu-item-wrapper').first()).toContainText('Dashboard');
-  });
+    test('Empty search input', async ({ searchPage }) => {
+        await searchPage.search('');
+        await searchPage.isNumberOfItemsCorrect(12);
+    });
 
-  test('Long string input', async ({ page }) => {
-    await page.getByPlaceholder('Search').fill('thisisaverylongsearchinputtotestmaxlimit');
-    await expect(page.locator('.oxd-main-menu-item-wrapper')).toHaveCount(0);
-  });
+    test('Mixed case search: DaShBoArD', async ({ searchPage }) => {
+        await searchPage.search('DaShBoArD');
+        // await searchPage.isMenuContainsText('Dashboard');
+        await searchPage.isMenuContainsTextAtIndex('Dashboard', 0);
+        await searchPage.isNumberOfItemsCorrect(1);
+    });
+
+    test('Long string input', async ({ searchPage }) => {
+        await searchPage.search('thisisaverylongsearchinputtotestmaxlimit');
+        await searchPage.isNumberOfItemsCorrect(0);
+    });
 });
