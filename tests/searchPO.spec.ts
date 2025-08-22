@@ -1,16 +1,9 @@
 import * as dotenv from 'dotenv';
-import { validUsername, validPassword } from '../utils/testData';
 import { expect, test } from './base';
 
 dotenv.config();
 
 test.describe('Sidebar Search Functionality', () => {
-    test.beforeEach(async ({ loginPage, searchPage }) => {
-        await loginPage.goto();
-        await loginPage.login(validUsername, validPassword);
-        await searchPage.isDashboardReady();
-    });
-
     test('Search exact match: Admin', async ({ searchPage }) => {
         await searchPage.search('Admin');
         await searchPage.isMenuContainsTextAtIndex('Admin', 0);
@@ -28,7 +21,6 @@ test.describe('Sidebar Search Functionality', () => {
         await searchPage.isMenuContainsTextAtIndex('Recruitment', 0);
         await searchPage.isMenuContainsTextAtIndex('Directory', 1);
         await searchPage.isNumberOfItemsCorrect(2);
-
     });
 
     test('Search with spaces: "  Buzz "', async ({ searchPage }) => {

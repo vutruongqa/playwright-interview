@@ -11,6 +11,8 @@ npx playwright install
 
 ```bash
 npx playwright test
+## Run Tests in Parallel
+npx playwright test --workers=4 
 ```
 
 ## Environment Variables
